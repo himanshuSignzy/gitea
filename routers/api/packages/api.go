@@ -361,6 +361,8 @@ func CommonRoutes() *web.Router {
 			r.Post("/api/charts", reqPackageAccess(perm.AccessModeWrite), helm.UploadPackage)
 		}, reqPackageAccess(perm.AccessModeRead))
 		r.Group("/maven", func() {
+			r.Get("", func(ctx *context.Context) { ctx.Status(http.StatusOK) })
+			r.Head("", func(ctx *context.Context) { ctx.Status(http.StatusOK) })
 			r.Put("/*", reqPackageAccess(perm.AccessModeWrite), maven.UploadPackageFile)
 			r.Get("/*", maven.DownloadPackageFile)
 			r.Head("/*", maven.ProvidePackageFileHeader)
@@ -403,6 +405,7 @@ func CommonRoutes() *web.Router {
 			}, reqPackageAccess(perm.AccessModeRead))
 		})
 		r.Group("/npm", func() {
+			r.Get("", func(ctx *context.Context) { ctx.JSON(http.StatusOK, struct{}{}) })
 			r.Group("/@{scope}/{id}", func() {
 				r.Get("", npm.PackageMetadata)
 				r.Put("", reqPackageAccess(perm.AccessModeWrite), npm.UploadPackage)
@@ -498,6 +501,7 @@ func CommonRoutes() *web.Router {
 
 		r.Group("/swift", func() {
 			r.Group("", func() { // Needs to be unauthenticated.
+				r.Get("", func(ctx *context.Context) { ctx.Status(http.StatusOK) })
 				r.Post("", swift.CheckAuthenticate)
 				r.Post("/login", swift.CheckAuthenticate)
 			})
